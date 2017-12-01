@@ -1,0 +1,3 @@
+[submodule "sceneparsing"]
+	path = sceneparsing
+	url = https://github.com/CSAILVision/sceneparsing.git
