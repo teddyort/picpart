@@ -13,4 +13,4 @@ max_iter: 200000
 weight_decay: 0.0005
 snapshot: 10000
 snapshot_prefix: "snapshot"
-solver_mode: CPU
+solver_mode: GPU

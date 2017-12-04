@@ -102,3 +102,6 @@ ENV/
 
 # sublime
 *.sublime-*
+
+# data
+data/
