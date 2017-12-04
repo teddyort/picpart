@@ -1,11 +1,11 @@
+import sys
 import caffe
-
 import numpy as np
 from PIL import Image
-
 import random
 
-from paths import *
+sys.path.append('../../')
+from paths import getDataPath
 
 class AdeSegDataLayer(caffe.Layer):
     """
@@ -29,9 +29,10 @@ class AdeSegDataLayer(caffe.Layer):
         """
         # config
         params = eval(self.param_str)
-        self.ade_dir = data_path+'ADEChallengeData2016/' # add the path to the dataset
+        self.data_path = getDataPath()
+        self.ade_dir = self.data_path+'ADEChallengeData2016/' # add the path to the dataset
         self.split = params['split']
-        self.split_dir = data_path+'ADEChallengeData2016/' # add path to the split files
+        self.split_dir = self.data_path+'ADEChallengeData2016/' # add path to the split files
         self.mean = np.array(params['mean'])
         self.random = params.get('randomize', True)
         self.seed = params.get('seed', None)
