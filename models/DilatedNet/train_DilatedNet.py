@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 import caffe
+import sys
+
+sys.path.append('../')
 
 caffe.set_mode_gpu()
 caffe.set_device(0)

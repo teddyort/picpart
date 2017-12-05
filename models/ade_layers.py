@@ -69,6 +69,14 @@ class AdeSegDataLayer(caffe.Layer):
         top[1].reshape(1, *self.label.shape)
 
 
+    def crop(self, raw_img):
+        h = raw_img.shape[0]
+        w = raw_img.shape[1]
+        v_offset = random.randint(0,h-self.fine_size)
+        h_offset = random.randint(0,w-self.fine_size)
+        return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,:]
+        
+
     def forward(self, bottom, top):
         # assign output
         top[0].data[...] = self.data
@@ -99,12 +107,6 @@ class AdeSegDataLayer(caffe.Layer):
         print(im_path)
         im = Image.open('{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx]))
         in_ = crop(np.array(im, dtype=np.float32))
-        # DilatedNet expects size divisible by 8 so crop accordingly
-        h = in_.shape[0]
-        w = in_.shape[1]
-        h = (h//8)*8
-        w = (w//8)*8
-        in_ = in_[0:h,0:w,:]        
         if (in_.ndim == 2):
             in_ = np.repeat(in_[:,:,None], 3, axis = 2)
         in_ = in_[:,:,::-1]
@@ -119,20 +121,7 @@ class AdeSegDataLayer(caffe.Layer):
         The leading singleton dimension is required by the loss.
         """
         im = Image.open('{}annotations/training/{}.png'.format(self.ade_dir, self.indices[self.idx]))
-        label = np.array(im, dtype=np.uint8)
-        # DilatedNet expects size divisible by 8 so crop accordingly
-        h = label.shape[0]
-        w = label.shape[1]
-        h = (h//8)*8
-        w = (w//8)*8
-        label = label[0:h,0:w]    
+        label = crop(np.array(im, dtype=np.uint8))
         label = label[np.newaxis, ...]
         return label
 
-    def crop(self, raw_img):
-        h = raw_img.shape[0]
-        w = raw_img.shape[1]
-        v_offset = random.randint(0,h-self.fine_size)
-        h_offset = random.randint(0,w-self.fine_size)
-        return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,:]
-        

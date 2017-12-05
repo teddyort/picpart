@@ -1,7 +1,7 @@
 import os
 
-#computer = 'cruncher'
-computer = 'amado'
+computer = 'cruncher'
+#computer = 'amado'
 
 def getDataPath():
     
