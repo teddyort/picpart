@@ -50,8 +50,8 @@ class AdeSegDataLayer(caffe.Layer):
         self.idx = 0
 
         # make eval deterministic
-        if 'train' not in self.split:
-            self.random = False
+        #if 'train' not in self.split:
+        #    self.random = False
 
         # randomization: seed and pick
         if self.random:
@@ -94,6 +94,8 @@ class AdeSegDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
+        im_path = '{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx])
+        print(im_path)
         im = Image.open('{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx]))
         in_ = np.array(im, dtype=np.float32)
         # DilatedNet expects size divisible by 8 so crop accordingly
