@@ -6,8 +6,11 @@ import sys
 
 sys.path.append('../')
 
-caffe.set_mode_gpu()
-caffe.set_device(0)
+mode = 'GPU'
+
+if mode == 'GPU':
+    caffe.set_mode_gpu()
+    caffe.set_device(0)
 
 #net = caffe.Net('/home/amado/caffe-rc5/tutorial/conv.prototxt', caffe.TEST)
 #im = np.array(Image.open('/home/amado/caffe-rc5/examples/images/cat_gray.jpg'))

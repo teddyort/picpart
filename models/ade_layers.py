@@ -48,6 +48,7 @@ class AdeSegDataLayer(caffe.Layer):
         # load indices for images and labels
         split_f  = self.split_dir+'{}.txt'.format(self.split) 
         self.indices = open(split_f, 'r').read().splitlines()
+        self.N = len(self.indices)
         self.idx = 0
 
         # make eval deterministic
@@ -57,7 +58,11 @@ class AdeSegDataLayer(caffe.Layer):
         # randomization: seed and pick
         if self.random:
             random.seed(self.seed)
-            self.idx = random.randint(0, len(self.indices)-1)
+            self.idx = random.randint(0, self.N-1)
+            
+        # this array contains the vertical and horizontal offset in the first
+        # column and whether to generate new values on the third
+        self.crop_sizes = np.ones([self.N,3],dtype=np.int)
 
 
     def reshape(self, bottom, top):
@@ -72,9 +77,16 @@ class AdeSegDataLayer(caffe.Layer):
     def crop(self, raw_img):
         h = raw_img.shape[0]
         w = raw_img.shape[1]
-        v_offset = random.randint(0,h-self.fine_size)
-        h_offset = random.randint(0,w-self.fine_size)
-        return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,:]
+        if self.crop_sizes[self.idx,2]:
+            self.crop_sizes[self.idx,0] = random.randint(0,h-self.fine_size)
+            self.crop_sizes[self.idx,1] = random.randint(0,w-self.fine_size)
+            self.crop_sizes[self.idx,2] = 0
+        else:
+            self.crop_sizes[self.idx,2] = 1
+        
+        v_offset = self.crop_sizes[self.idx,0]
+        h_offset = self.crop_sizes[self.idx,1]
+        return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,...]
         
 
     def forward(self, bottom, top):
@@ -84,10 +96,10 @@ class AdeSegDataLayer(caffe.Layer):
 
         # pick next input
         if self.random:
-            self.idx = random.randint(0, len(self.indices)-1)
+            self.idx = random.randint(0, self.N-1)
         else:
             self.idx += 1
-            if self.idx == len(self.indices):
+            if self.idx == self.N:
                 self.idx = 0
 
 
@@ -103,10 +115,9 @@ class AdeSegDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        im_path = '{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx])
-        print(im_path)
-        im = Image.open('{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx]))
-        in_ = crop(np.array(im, dtype=np.float32))
+        im = Image.open('{}images/training/{}.jpg'.format(self.ade_dir, idx))
+        
+        in_ = self.crop(np.array(im, dtype=np.float32))
         if (in_.ndim == 2):
             in_ = np.repeat(in_[:,:,None], 3, axis = 2)
         in_ = in_[:,:,::-1]
@@ -120,8 +131,8 @@ class AdeSegDataLayer(caffe.Layer):
         Load label image as 1 x height x width integer array of label indices.
         The leading singleton dimension is required by the loss.
         """
-        im = Image.open('{}annotations/training/{}.png'.format(self.ade_dir, self.indices[self.idx]))
-        label = crop(np.array(im, dtype=np.uint8))
+        im = Image.open('{}annotations/training/{}.png'.format(self.ade_dir, idx))
+        label = self.crop(np.array(im, dtype=np.uint8))
         label = label[np.newaxis, ...]
         return label
 
