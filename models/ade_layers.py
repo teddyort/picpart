@@ -36,6 +36,7 @@ class AdeSegDataLayer(caffe.Layer):
         self.mean = np.array(params['mean'])
         self.random = params.get('randomize', True)
         self.seed = params.get('seed', None)
+        self.fine_size = 96 # must be multiple of 8 for DilatedNet
 
         # two tops: data and label
         if len(top) != 2:
@@ -46,12 +47,12 @@ class AdeSegDataLayer(caffe.Layer):
 
         # load indices for images and labels
         split_f  = self.split_dir+'{}.txt'.format(self.split) 
-        self.indices = [line.split()[0] for line in open(split_f, 'r').read().splitlines()]
+        self.indices = open(split_f, 'r').read().splitlines()
         self.idx = 0
 
         # make eval deterministic
-        #if 'train' not in self.split:
-        #    self.random = False
+        if 'train' not in self.split:
+            self.random = False
 
         # randomization: seed and pick
         if self.random:
@@ -97,7 +98,7 @@ class AdeSegDataLayer(caffe.Layer):
         im_path = '{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx])
         print(im_path)
         im = Image.open('{}images/training/{}.jpg'.format(self.ade_dir, self.indices[self.idx]))
-        in_ = np.array(im, dtype=np.float32)
+        in_ = crop(np.array(im, dtype=np.float32))
         # DilatedNet expects size divisible by 8 so crop accordingly
         h = in_.shape[0]
         w = in_.shape[1]
@@ -128,3 +129,10 @@ class AdeSegDataLayer(caffe.Layer):
         label = label[np.newaxis, ...]
         return label
 
+    def crop(self, raw_img):
+        h = raw_img.shape[0]
+        w = raw_img.shape[1]
+        v_offset = random.randint(0,h-self.fine_size)
+        h_offset = random.randint(0,w-self.fine_size)
+        return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,:]
+        
