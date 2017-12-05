@@ -1,4 +1,4 @@
-net: "train_DilatedNet.prototxt"
+net: "DilatedNet/train_DilatedNet.prototxt"
 test_initialization: false
 test_iter: 10
 test_interval: 1000000

@@ -1,8 +1,7 @@
-import numpy as np
 import cv2
 import sys
 
-sys.path.append('../')
+sys.path.append('../util/')
 from paths import getDataPath
 
 im = cv2.imread(getDataPath()+'ADEChallengeData2016/images/training/ADE_train_00000001.jpg')

@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import random
 
-sys.path.append('../../')
+sys.path.append('../util/')
 from paths import getDataPath
 
 class AdeSegDataLayer(caffe.Layer):

@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'split\': \'sceneCategories\', \'mean\': (109.5388, 118.6897, 124.6901), \'randomize\': True}"
+    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'randomize\': True}"
   }
 }
 layer {

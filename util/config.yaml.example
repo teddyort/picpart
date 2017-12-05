@@ -1,0 +1,10 @@
+# make a copy of this file with name config.yaml and
+# fill in the correct values in current computer
+# 
+# config.yaml is ignored by git
+
+# path to dropbox folder
+dropbox_path: '<path to dropbox folder>'
+
+# whether GPU is used
+GPU: true
