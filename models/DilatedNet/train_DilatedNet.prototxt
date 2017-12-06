@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 2, \'phase\': \'TRAIN\'}"
+    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10, \'phase\': \'TRAIN\'}"
   }
   include {
     phase: TRAIN

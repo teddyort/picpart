@@ -42,7 +42,10 @@ class IoULayer(caffe.Layer):
         labels = bottom[1].data
         hist = self.fast_hist(labels.flatten(), predictions.argmax(1).flatten())
         self.total_hist += hist
-        IoU = np.diag(hist)[1:-1]/(hist.sum(1)[1:-1]+hist.sum(0)[1:-1]-np.diag(hist)[1:-1])
+        IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist.sum(0)[1:]-np.diag(hist)[1:])
+        print('IoU:')
+        print(IoU)
+        print('shape: {}'.format(IoU.shape))
         print('mean IoU: {}'.format(np.nanmean(IoU)))
         
     
