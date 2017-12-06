@@ -21,13 +21,11 @@ class IoULayer(caffe.Layer):
         params = eval(self.param_str)
         # number of pixel classes including 0 which is not counted
         self.n_classes= params["classes"]
-        # keep track of the total histogram of precision
-        #   each entry (i,j) counts the number of pixels classified as i
-        #   in the label and predicted as j (a perfect prediction is diagonal)
-        self.total_hist = np.zeros([self.n_classes, self.n_classes])
     
     def reshape(self, bottom, top):
-        pass
+        # each entry (i,j) in hist counts the number of pixels classified as i
+        #   in the label and predicted as j (a perfect prediction is diagonal)
+        self.hist = np.zeros([self.n_classes, self.n_classes])
     
     def fast_hist(self, labels, predictions):
         # todo check dimensions and min and max values
@@ -40,12 +38,12 @@ class IoULayer(caffe.Layer):
         # predictions must go first in the prototxt definition
         predictions = bottom[0].data
         labels = bottom[1].data
-        hist = self.fast_hist(labels.flatten(), predictions.argmax(1).flatten())
-        self.total_hist += hist
+        for i in range(labels.shape[0]):
+            hist = self.fast_hist(labels[i,...].flatten(), predictions[i,...].argmax(0).flatten())
+            self.hist += hist
         IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist.sum(0)[1:]-np.diag(hist)[1:])
         print('IoU:')
         print(IoU)
-        print('shape: {}'.format(IoU.shape))
         print('mean IoU: {}'.format(np.nanmean(IoU)))
         
     
