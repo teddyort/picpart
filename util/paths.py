@@ -14,7 +14,7 @@ def getDataPath():
         print('ERROR: Unable to open config.yaml, did you forget to create it?')
         sys.exit()
         
-    data_path = config['dropbox_path']+'data/'
+    data_path = config['data_path']
     
     if not os.path.isdir(data_path):
         raise ValueError('Path not found: {}'.format(data_path))
