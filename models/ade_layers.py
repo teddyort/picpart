@@ -36,7 +36,7 @@ class AdeSegDataLayer(caffe.Layer):
         self.mean = np.array(params['mean'])
         self.random = params.get('randomize', True)
         self.seed = params.get('seed', None)
-        self.batch_size = 100
+        self.batch_size = params['batch_size']
         self.fine_size = 96 # must be multiple of 8 for DilatedNet
 
         # two tops: data and label
