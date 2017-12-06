@@ -108,3 +108,7 @@ data/
 
 # paths file
 util/config.yaml
+
+# caffe saves
+*.caffemodel
+*.solverstate
