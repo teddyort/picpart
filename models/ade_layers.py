@@ -40,6 +40,8 @@ class AdeSegDataLayer(caffe.Layer):
         self.seed = params.get('seed', None)
         self.batch_size = params['batch_size']
         self.fine_size = 96 # must be multiple of 8 for DilatedNet
+        self.data_shape = (self.batch_size, 3, self.fine_size, self.fine_size)
+        self.label_shape = (self.batch_size, 1, self.fine_size, self.fine_size)        
         self.PHASE = params['phase']
 
         # two tops: data and label
@@ -70,12 +72,15 @@ class AdeSegDataLayer(caffe.Layer):
 
 
     def reshape(self, bottom, top):
-        # load image + label image pair
-        self.data = self.load_image(self.indices[self.idx])
-        self.label = self.load_label(self.indices[self.idx])
+        # load image + label image batch pair
+        self.data = np.zeros(self.data_shape)
+        self.label = np.zeros(self.label_shape)
+        for i in range(self.batch_size):
+            self.data[i,...] = self.load_image(self.indices[self.idx])
+            self.label[i,...] = self.load_label(self.indices[self.idx])
         # reshape tops to fit (leading 1 is for batch dimension)
-        top[0].reshape(self.batch_size, *self.data.shape)
-        top[1].reshape(self.batch_size, *self.label.shape)
+        top[0].reshape(*self.data_shape)
+        top[1].reshape(*self.label_shape)
 
 
     def crop(self, raw_img):
