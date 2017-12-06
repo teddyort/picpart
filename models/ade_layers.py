@@ -36,6 +36,7 @@ class AdeSegDataLayer(caffe.Layer):
         self.mean = np.array(params['mean'])
         self.random = params.get('randomize', True)
         self.seed = params.get('seed', None)
+        self.batch_size = 100
         self.fine_size = 96 # must be multiple of 8 for DilatedNet
 
         # two tops: data and label
@@ -70,8 +71,8 @@ class AdeSegDataLayer(caffe.Layer):
         self.data = self.load_image(self.indices[self.idx])
         self.label = self.load_label(self.indices[self.idx])
         # reshape tops to fit (leading 1 is for batch dimension)
-        top[0].reshape(1, *self.data.shape)
-        top[1].reshape(1, *self.label.shape)
+        top[0].reshape(self.batch_size, *self.data.shape)
+        top[1].reshape(self.batch_size, *self.label.shape)
 
 
     def crop(self, raw_img):
