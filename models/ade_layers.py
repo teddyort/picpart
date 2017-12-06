@@ -41,6 +41,9 @@ class AdeSegDataLayer(caffe.Layer):
         self.batch_size = params['batch_size']
         self.fine_size = params['fine_size'] # must be multiple of 8 for DilatedNet
         self.data_shape = (self.batch_size, 3, self.fine_size, self.fine_size)
+        self.resize_mode = params['resize_mode']
+        if not self.resize_mode in ['crop','scale']:
+            raise Exception("ERROR: resize_mode ({}) not recognized.".format(self.resize_mode))
         self.label_shape = (self.batch_size, 1, self.fine_size, self.fine_size)        
         self.PHASE = params['phase']
 
@@ -105,10 +108,16 @@ class AdeSegDataLayer(caffe.Layer):
         
         v_offset = self.crop_sizes[self.idx,0]
         h_offset = self.crop_sizes[self.idx,1]
-        return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,...]
+        return np.array(raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,...],dtype=np.float32)
         
+    def scale(self, raw_img):
+        return np.array(raw_img.resize((self.fine_size,self.fine_size),Image.NEAREST),dtype=np.float32)
+    
     def resize(self, raw_img):
-        pass
+        if self.resize_mode == 'crop':
+            return self.crop(raw_img)
+        elif self.resize_mode == 'scale':
+            return self.scale(raw_img)
 
     def forward(self, bottom, top):
         # assign output
@@ -129,8 +138,8 @@ class AdeSegDataLayer(caffe.Layer):
         - transpose to channel x height x width order
         """
         im = Image.open('{}images/{}/{}.jpg'.format(self.ade_dir, self.split, idx))
-        
-        in_ = self.crop(np.array(im, dtype=np.float32))
+        in_ = self.resize(im)
+            
         if (in_.ndim == 2):
             in_ = np.repeat(in_[:,:,None], 3, axis = 2)
         in_ = in_[:,:,::-1]
@@ -145,7 +154,7 @@ class AdeSegDataLayer(caffe.Layer):
         The leading singleton dimension is required by the loss.
         """
         im = Image.open('{}annotations/{}/{}.png'.format(self.ade_dir, self.split, idx))
-        label = self.crop(np.array(im, dtype=np.uint8))
+        label = self.resize(im)
         label = label[np.newaxis, ...]
         return label
 

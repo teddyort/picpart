@@ -37,13 +37,15 @@ class IoULayer(caffe.Layer):
         """
         # predictions must go first in the prototxt definition
         predictions = bottom[0].data
+        print('First 10 predictions of first image:')
+        print(predictions[0,...].argmax(0).flatten()[0:10])
         labels = bottom[1].data
         for i in range(labels.shape[0]):
             hist = self.fast_hist(labels[i,...].flatten(), predictions[i,...].argmax(0).flatten())
             self.hist += hist
         IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist.sum(0)[1:]-np.diag(hist)[1:])
-        print('IoU:')
-        print(IoU)
+        print('Top 10 x 10 of hist:')
+        print(self.hist[0:10,0:10])
         print('mean IoU: {}'.format(np.nanmean(IoU)))
         
     
