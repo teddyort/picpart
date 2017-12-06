@@ -389,3 +389,19 @@ layer {
     phase: TEST
   }
 }
+
+layer {
+  name: "Accuracy"
+  type: "Accuracy"
+  bottom: "fc_final_up"
+  bottom: "label"
+  top: "accuracy"
+  accuracy_param {
+    top_k: 5
+    ignore_label: 0
+    axis: 1
+  }
+  include {
+    phase: TEST
+  }
+}
