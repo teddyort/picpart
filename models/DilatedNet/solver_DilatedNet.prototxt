@@ -1,7 +1,7 @@
 net: "DilatedNet/train_DilatedNet.prototxt"
-test_initialization: false
+test_initialization: true
 test_iter: 10
-test_interval: 1000000
+test_interval: 10000
 test_compute_loss: true
 base_lr: 0.001
 lr_policy: "step"

@@ -27,6 +27,8 @@ class AdeSegDataLayer(caffe.Layer):
         
 
         """
+        print("-----------------------------------------------------------")
+        print("Phase: {}".format(self.phase))
         # config
         params = eval(self.param_str)
         self.data_path = getDataPath()
@@ -38,6 +40,7 @@ class AdeSegDataLayer(caffe.Layer):
         self.seed = params.get('seed', None)
         self.batch_size = params['batch_size']
         self.fine_size = 96 # must be multiple of 8 for DilatedNet
+        self.PHASE = params['phase']
 
         # two tops: data and label
         if len(top) != 2:
@@ -116,7 +119,7 @@ class AdeSegDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        im = Image.open('{}images/training/{}.jpg'.format(self.ade_dir, idx))
+        im = Image.open('{}images/{}/{}.jpg'.format(self.ade_dir, self.split, idx))
         
         in_ = self.crop(np.array(im, dtype=np.float32))
         if (in_.ndim == 2):
@@ -132,7 +135,7 @@ class AdeSegDataLayer(caffe.Layer):
         Load label image as 1 x height x width integer array of label indices.
         The leading singleton dimension is required by the loss.
         """
-        im = Image.open('{}annotations/training/{}.png'.format(self.ade_dir, idx))
+        im = Image.open('{}annotations/{}/{}.png'.format(self.ade_dir, self.split, idx))
         label = self.crop(np.array(im, dtype=np.uint8))
         label = label[np.newaxis, ...]
         return label

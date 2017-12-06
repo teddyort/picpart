@@ -6,7 +6,25 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10}"
+    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TRAIN\'}"
+  }
+  include {
+    phase: TRAIN
+  }
+}
+
+layer {
+  name: "data"
+  type: "Python"
+  top: "data"
+  top: "label"
+  python_param {
+    module: "ade_layers"
+    layer: "AdeSegDataLayer"
+    param_str: "{\'seed\': 1337, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TEST\'}"
+  }
+  include {
+    phase: TEST
   }
 }
 
@@ -354,5 +372,20 @@ layer {
   top: "loss"
   loss_param {
     ignore_label: 0
+  }
+}
+
+layer {
+  name: "IoU"
+  type: "Python"
+  bottom: "fc_final_up"
+  bottom: "label"
+  python_param {
+    module: "IoU_layer"
+    layer: "IoULayer"
+    param_str: "{\'classes\': 151}"
+  }
+  include {
+    phase: TEST
   }
 }
