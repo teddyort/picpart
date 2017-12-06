@@ -14,11 +14,10 @@ if GPU:
     caffe.set_device(0)
 
 solver = None
-if len(restore_from) == 0:
-    solver = caffe.get_solver('DilatedNet/solver_DilatedNet.prototxt')
-else:
-    solver = caffe.get_solver(restore_from+'.caffemodel')
+solver = caffe.get_solver('DilatedNet/solver_DilatedNet.prototxt')
+if len(restore_from) > 0:
     solver.restore(restore_from+'.solverstate')
+    print('restored session from {}'.format(restore_from))
 #solver = caffe.get_solver('FCN/solver_FCN.prototxt')
 
 
