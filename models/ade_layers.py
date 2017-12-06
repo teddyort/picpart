@@ -39,7 +39,7 @@ class AdeSegDataLayer(caffe.Layer):
         self.random = params.get('randomize', True)
         self.seed = params.get('seed', None)
         self.batch_size = params['batch_size']
-        self.fine_size = 96 # must be multiple of 8 for DilatedNet
+        self.fine_size = params['fine_size'] # must be multiple of 8 for DilatedNet
         self.data_shape = (self.batch_size, 3, self.fine_size, self.fine_size)
         self.label_shape = (self.batch_size, 1, self.fine_size, self.fine_size)        
         self.PHASE = params['phase']
@@ -70,6 +70,15 @@ class AdeSegDataLayer(caffe.Layer):
         # column and whether to generate new values on the third
         self.crop_sizes = np.ones([self.N,3],dtype=np.int)
 
+    def increment(self):
+        # pick next input
+        if self.random:
+            self.idx = random.randint(0, self.N-1)
+        else:
+            self.idx += 1
+            if self.idx == self.N:
+                self.idx = 0
+        
 
     def reshape(self, bottom, top):
         # load image + label image batch pair
@@ -78,6 +87,7 @@ class AdeSegDataLayer(caffe.Layer):
         for i in range(self.batch_size):
             self.data[i,...] = self.load_image(self.indices[self.idx])
             self.label[i,...] = self.load_label(self.indices[self.idx])
+            self.increment()
         # reshape tops to fit (leading 1 is for batch dimension)
         top[0].reshape(*self.data_shape)
         top[1].reshape(*self.label_shape)
@@ -97,19 +107,13 @@ class AdeSegDataLayer(caffe.Layer):
         h_offset = self.crop_sizes[self.idx,1]
         return raw_img[v_offset:v_offset+self.fine_size,h_offset:h_offset+self.fine_size,...]
         
+    def resize(self, raw_img):
+        pass
 
     def forward(self, bottom, top):
         # assign output
         top[0].data[...] = self.data
         top[1].data[...] = self.label
-
-        # pick next input
-        if self.random:
-            self.idx = random.randint(0, self.N-1)
-        else:
-            self.idx += 1
-            if self.idx == self.N:
-                self.idx = 0
 
 
     def backward(self, top, propagate_down, bottom):
