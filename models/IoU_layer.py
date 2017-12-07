@@ -18,14 +18,19 @@ class IoULayer(caffe.Layer):
         if len(bottom) != 2:
             raise Exception('Need two bottom inputs for IoULayer')
         
+        if len(top) != 1:
+            raise Exception('Need one top layer for meanIoU')
+        
         params = eval(self.param_str)
         # number of pixel classes including 0 which is not counted
         self.n_classes= params["classes"]
+        self.verbose = params["verbose"]
     
     def reshape(self, bottom, top):
         # each entry (i,j) in hist counts the number of pixels classified as i
         #   in the label and predicted as j (a perfect prediction is diagonal)
         self.hist = np.zeros([self.n_classes, self.n_classes])
+        top[0].reshape(1)
     
     def fast_hist(self, labels, predictions):
         # todo check dimensions and min and max values
@@ -37,16 +42,19 @@ class IoULayer(caffe.Layer):
         """
         # predictions must go first in the prototxt definition
         predictions = bottom[0].data
-        print('First 10 predictions of first image:')
-        print(predictions[0,...].argmax(0).flatten()[0:10])
         labels = bottom[1].data
         for i in range(labels.shape[0]):
             hist = self.fast_hist(labels[i,...].flatten(), predictions[i,...].argmax(0).flatten())
             self.hist += hist
         IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist.sum(0)[1:]-np.diag(hist)[1:])
-        print('Top 10 x 10 of hist:')
-        print(self.hist[0:10,0:10])
-        print('mean IoU: {}'.format(np.nanmean(IoU)))
+        meanIoU = np.nanmean(IoU)
+        top[0].data[...] = meanIoU
+        if self.verbose:
+            print('First 10 predictions of first image:')
+            print(predictions[0,...].argmax(0).flatten()[0:10])
+            print('Top 10 x 10 of hist:')
+            print(self.hist[0:10,0:10])
+            print('mean IoU: {}'.format(meanIoU))
         
     
     def backward(self, top, propagate_down, bottom):

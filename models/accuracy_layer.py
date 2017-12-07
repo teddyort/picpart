@@ -18,12 +18,16 @@ class SegmentationAccuracy(caffe.Layer):
         """
         if len(bottom) != 2:
             raise Exception('Need two bottom inputs for SegmentationAccuracy')
+            
+        if len(top) != 1:
+            raise Exception('Need one top layer for pixel accuracy')
         
         params = eval(self.param_str)
         self.ignore_label = params['ignore_label']
+        self.verbose = params['verbose']
     
     def reshape(self, bottom, top):
-        pass
+        top[0].reshape(1)
     
     def forward(self, bottom, top):
         """
@@ -39,7 +43,9 @@ class SegmentationAccuracy(caffe.Layer):
             hits += ((labels[i,...] == predictions[i,...].argmax(0)) & np.logical_not(mask_ignore))
             n += np.logical_not(mask_ignore).sum()
         mean_accuracy = hits.sum()/n
-        print('mean pixel accuracy: {:.3f}'.format(mean_accuracy))
+        top[0].data[...] = mean_accuracy
+        if self.verbose:
+            print('mean pixel accuracy: {:.3f}'.format(mean_accuracy))
         
     
     def backward(self, top, propagate_down, bottom):

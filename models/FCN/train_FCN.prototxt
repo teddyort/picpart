@@ -682,3 +682,29 @@ layer {
     axis: 1
   }
 }
+
+layer {
+  name: "IoU"
+  type: "Python"
+  bottom: "score"
+  bottom: "label"
+  top: "meanIoU"
+  python_param {
+    module: "IoU_layer"
+    layer: "IoULayer"
+    param_str: "{\'classes\': 151, \'verbose\': False}"
+  }
+}
+
+layer {
+  name: "Logger"
+  type: "Python"
+  bottom: "accuracy"
+  bottom: "meanIoU"
+  bottom: "loss"
+  python_param {
+    module: "log_layer"
+    layer: "LogLayer"
+    param_str: "{\'file\':\'FCN_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+  }
+}

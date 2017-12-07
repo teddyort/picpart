@@ -380,10 +380,11 @@ layer {
   type: "Python"
   bottom: "fc_final_up"
   bottom: "label"
+  top: "seg_accuracy"
   python_param {
     module: "accuracy_layer"
     layer: "SegmentationAccuracy"
-    param_str: "{\'ignore_label\': 0}"
+    param_str: "{\'ignore_label\': 0, \'verbose\': True}"
   }
   include {
     phase: TEST
@@ -395,13 +396,11 @@ layer {
   type: "Python"
   bottom: "fc_final_up"
   bottom: "label"
+  top: "meanIoU"
   python_param {
     module: "IoU_layer"
     layer: "IoULayer"
-    param_str: "{\'classes\': 151}"
-  }
-  include {
-    phase: TEST
+    param_str: "{\'classes\': 151, \'verbose\': False}"
   }
 }
 
@@ -415,5 +414,18 @@ layer {
     top_k: 1
     ignore_label: 0
     axis: 1
+  }
+}
+
+layer {
+  name: "Logger"
+  type: "Python"
+  bottom: "accuracy"
+  bottom: "meanIoU"
+  bottom: "loss"
+  python_param {
+    module: "log_layer"
+    layer: "LogLayer"
+    param_str: "{\'file\':\'DilatedNet_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
 }
