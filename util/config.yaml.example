@@ -4,7 +4,7 @@
 # config.yaml is ignored by git
 
 # path to dropbox folder
-dropbox_path: '<path to dropbox folder>'
+dropbox: '<path to dropbox folder>/Scene_Segmentation/'
 
 # whether GPU is used
 GPU: true
