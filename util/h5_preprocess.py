@@ -12,7 +12,6 @@ import numpy as np
 sys.path.append('../../')
 from paths import getDataPath
 
-#F.close()
 def createH5(params):
     output_file = params['name']+'.h5'    
     F = h5py.File(output_file,"w")
