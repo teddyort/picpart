@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10, \'phase\': \'TRAIN\', \'fine_size\': 192, \'resize_mode\': \'scale\'}"
+    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10, \'phase\': \'TRAIN\', \'fine_size\': 96}"
   }
   include {
     phase: TRAIN
@@ -21,7 +21,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10, \'phase\': \'TEST\', \'fine_size\': 192, \'resize_mode\': \'scale\'}"
+    param_str: "{\'seed\': 1337, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10, \'phase\': \'TEST\', \'fine_size\': 96}"
   }
   include {
     phase: TEST
