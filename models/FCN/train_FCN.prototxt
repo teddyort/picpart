@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'randomize\': True}"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TRAIN\', \'fine_size\': 192, \'resize_mode\': \'scale\', \'loader\': \'disk\'}"
   }
 }
 layer {
@@ -666,5 +666,19 @@ layer {
   loss_param {
     ignore_label: 0
     normalize: false
+  }
+}
+
+
+layer {
+  name: "Accuracy"
+  type: "Accuracy"
+  bottom: "score"
+  bottom: "label"
+  top: "accuracy"
+  accuracy_param {
+    top_k: 1
+    ignore_label: 0
+    axis: 1
   }
 }

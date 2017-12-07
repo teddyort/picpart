@@ -1,7 +1,8 @@
 net: "FCN/train_FCN.prototxt"
+test_initialization: false
 # make test net, but don't invoke it from the solver itself
-test_interval: 999999999
-display: 1
+test_interval: 1000000
+display: 10
 average_loss: 20
 lr_policy: "fixed"
 # lr for unnormalized softmax
@@ -14,4 +15,3 @@ max_iter: 300000
 weight_decay: 0.0005
 snapshot: 2000
 snapshot_prefix: "snapshot"
-test_initialization: false

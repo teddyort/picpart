@@ -3,21 +3,30 @@ import yaml
 
 with open('../util/config.yaml', 'r') as f:
     config = yaml.load(f)
-    
-#restore_from = '../snapshots/DilatedNet_Dec_05/snapshot_iter_190000.solverstate'
+
+#network = 'DilatedNet'
+network = 'FCN'
+
+solver_prototxt = ''
 restore_from = ''
+copyfrom = ''
+if network == 'DilatedNet':
+    solver_prototxt = 'DilatedNet/solver_DilatedNet.prototxt'
+    copy_from = config['dropbox']+'pretrained_models/DilatedNet_iter_120000.caffemodel'
+    #restore_from = '../snapshots/DilatedNet_Dec_05/snapshot_iter_190000.solverstate'
+elif network == 'FCN':
+    solver_prototxt = 'FCN/solver_FCN.prototxt'
+    copy_from = config['dropbox']+'pretrained_models/FCN_iter_160000.caffemodel'
+    #restore_from = '***.solverstate'
 
-copy_from = config['dropbox']+'pretrained_models/DilatedNet_iter_120000.caffemodel'
 
-    
 GPU = config['GPU']
 
 if GPU:
     caffe.set_mode_gpu()
     caffe.set_device(0)
 
-solver = None
-solver = caffe.get_solver('DilatedNet/solver_DilatedNet.prototxt')
+solver = caffe.get_solver(solver_prototxt)
 if len(restore_from) > 0:
     solver.restore(restore_from)
     print('restored session from {}'.format(restore_from))
