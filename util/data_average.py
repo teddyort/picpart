@@ -10,9 +10,9 @@ import sys
 import cv2
 
 sys.path.append('../../')
-from paths import getDataPath
+from paths import getDropboxPath
 
-folder = getDataPath()+'ADEChallengeData2016/images/training/'
+folder = getDropboxPath()+'data/ADEChallengeData2016/images/training/'
 
 m = np.zeros([1,3])
 files = os.listdir(folder)

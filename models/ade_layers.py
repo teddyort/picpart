@@ -5,7 +5,7 @@ from PIL import Image
 import random
 
 sys.path.append('../util/')
-from paths import getDataPath
+from paths import getDropboxPath
 
 class AdeSegDataLayer(caffe.Layer):
     """
@@ -31,10 +31,10 @@ class AdeSegDataLayer(caffe.Layer):
         print("Phase: {}".format(self.phase))
         # config
         params = eval(self.param_str)
-        self.data_path = getDataPath()
-        self.ade_dir = self.data_path+'ADEChallengeData2016/' # add the path to the dataset
+        self.data_path = getDropboxPath()+'data/ADEChallengeData2016/'
+        self.ade_dir = self.data_path # add the path to the dataset
         self.split = params['split']
-        self.split_dir = self.data_path+'ADEChallengeData2016/' # add path to the split files
+        self.split_dir = self.data_path # add path to the split files
         self.mean = np.array(params['mean'])
         self.random = params.get('randomize', True)
         self.seed = params.get('seed', None)

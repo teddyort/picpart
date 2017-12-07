@@ -10,7 +10,9 @@ import scipy.misc
 import numpy as np
 
 sys.path.append('../../')
-from paths import getDataPath
+from paths import getDropboxPath
+
+data_path = getDropboxPath()+'data/ADEChallengeData2016/'
 
 def createH5(params):
     output_file = params['name']+'.h5'    
@@ -48,16 +50,16 @@ if __name__ == '__main__':
     params_train = {
         'name': 'training',
         'resize': 384,
-        'im_folder': getDataPath()+'ADEChallengeData2016/images/training/',
-        'lb_folder': getDataPath()+'ADEChallengeData2016/annotations/training/',
-        'data_list': getDataPath()+'ADEChallengeData2016/training.txt'
+        'im_folder': data_path+'images/training/',
+        'lb_folder': data_path+'annotations/training/',
+        'data_list': data_path+'training.txt'
     }
     params_val = {
         'name': 'validation',
         'resize': 384,
-        'im_folder': getDataPath()+'ADEChallengeData2016/images/validation/',
-        'lb_folder': getDataPath()+'ADEChallengeData2016/annotations/validation/',
-        'data_list': getDataPath()+'ADEChallengeData2016/validation.txt'
+        'im_folder': data_path+'images/validation/',
+        'lb_folder': data_path+'annotations/validation/',
+        'data_list': data_path+'validation.txt'
     }
     createH5(params_train)
 #    createH5(params_val)
