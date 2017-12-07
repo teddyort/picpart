@@ -7,7 +7,7 @@ with open('../util/config.yaml', 'r') as f:
 #restore_from = '../snapshots/DilatedNet_Dec_05/snapshot_iter_190000.solverstate'
 restore_from = ''
 
-copy_from = '***.caffemodel'
+copy_from = config['dropbox']+'pretrained_models/DilatedNet_iter_120000.caffemodel'
 
     
 GPU = config['GPU']

@@ -385,6 +385,9 @@ layer {
     layer: "SegmentationAccuracy"
     param_str: "{\'ignore_label\': 0}"
   }
+  include {
+    phase: TEST
+  }
 }
 
 layer {
