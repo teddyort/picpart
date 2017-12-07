@@ -8,15 +8,14 @@ import os
 import sys
 
 sys.path.append('../../')
-from paths import getDataPath
+from paths import getDropboxPath
 
 split = 'training'
 #split = 'validation'
 
-#split_file = getDataPath()+split+".txt"
 split_file = split+".txt"
 
-folder = getDataPath()+'ADEChallengeData2016/images/'+split
+folder = getDropboxPath()+'data/ADEChallengeData2016/images/'+split
 
 files = os.listdir(folder)
 
