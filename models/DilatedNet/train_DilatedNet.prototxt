@@ -376,6 +376,18 @@ layer {
 }
 
 layer {
+  name: "SegAccuracy"
+  type: "Python"
+  bottom: "fc_final_up"
+  bottom: "label"
+  python_param {
+    module: "accuracy_layer"
+    layer: "SegmentationAccuracy"
+    param_str: "{\'ignore_label\': 0}"
+  }
+}
+
+layer {
   name: "IoU"
   type: "Python"
   bottom: "fc_final_up"
@@ -397,11 +409,8 @@ layer {
   bottom: "label"
   top: "accuracy"
   accuracy_param {
-    top_k: 5
+    top_k: 1
     ignore_label: 0
     axis: 1
-  }
-  include {
-    phase: TEST
   }
 }
