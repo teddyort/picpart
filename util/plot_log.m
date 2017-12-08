@@ -1,5 +1,7 @@
 clear, clc, clf
-log_folder = '/home/amado/dropbox/Local/Fall17/Computer_Vision/Scene_Segmentation/logs/';
+addpath(genpath('yaml_matlab')); 
+config = ReadYaml('config.yaml');
+log_folder = [config.dropbox,'logs/'];
 % log_train_name = 'DilatedNet_log.txt';
 log_train_name = 'FCN_train_log.txt';
 log_train_file = [log_folder,log_train_name];
@@ -8,7 +10,7 @@ vars = T_train.Properties.VariableNames;
 
 xname = vars{1};
 xdata_train = T_train.(xname);
-k = 10;
+k = 400;
 for i = 3:size(vars,2)
     yname = vars{i};
     figure(i-2)
