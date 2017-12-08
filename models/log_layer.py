@@ -27,10 +27,12 @@ class LogLayer(caffe.Layer):
         
         with open(self.file,'w') as writer:
         
-            writer.write('datetime')
+            writer.write('iteration,datetime')
             for h in headers:
                 writer.write(','+h)
             writer.write('\n')
+            
+        self.iter = 0
     
     def reshape(self, bottom, top):
         pass
@@ -40,10 +42,13 @@ class LogLayer(caffe.Layer):
         Compute IoU for current batch
         """
         with open(self.file,'a') as writer:
-            writer.write(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+            writer.write('{}'.format(self.iter))
+            self.iter += 1
+            writer.write(datetime.datetime.now().strftime(",%Y-%m-%d_%H:%M:%S"))
             for i in range(len(bottom)):
                 writer.write(',{}'.format(np.asscalar(bottom[i].data)))
             writer.write('\n')
+            
         
     
     def backward(self, top, propagate_down, bottom):
