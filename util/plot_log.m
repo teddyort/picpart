@@ -1,20 +1,39 @@
 clear, clc, clf
 log_folder = '/home/amado/dropbox/Local/Fall17/Computer_Vision/Scene_Segmentation/logs/';
-% log_name = 'DilatedNet_log.txt';
-log_name = 'FCN_log_0855pm.txt';
-log_file = [log_folder,log_name];
-T = readtable(log_file,'Delimiter',',','HeaderLines',0,'ReadVariableNames',true);
-variables = T.Properties.VariableNames;
+% log_train_name = 'DilatedNet_log.txt';
+log_train_name = 'FCN_train_log.txt';
+log_train_file = [log_folder,log_train_name];
+T_train = readtable(log_train_file,'Delimiter',',','HeaderLines',0,'ReadVariableNames',true);
+vars = T_train.Properties.VariableNames;
 
-xname = variables{1};
-xdata = T.(xname);
-k = 200;
-for i = 3:size(variables,2)
-    yname = variables{i};
+xname = vars{1};
+xdata_train = T_train.(xname);
+k = 10;
+for i = 3:size(vars,2)
+    yname = vars{i};
     figure(i-2)
-    ydata = movmean(T.(yname),k);
-    plot(xdata,ydata)
+    ydata_train = movmean(T_train.(yname),k);
+    plot(xdata_train,ydata_train)
     title(yname)
     xlabel(xname)
     ylabel(yname)
+end
+
+validation_too = true;
+
+if validation_too
+    test_interval = 10;
+    log_test_name = 'FCN_test_log.txt';
+    log_test_file = [log_folder,log_test_name];
+    T_test= readtable(log_test_file,'Delimiter',',','HeaderLines',0,'ReadVariableNames',true);
+    xdata_test = test_interval*T_test.(xname);
+    for i = 3:size(vars,2)
+        yname = vars{i};
+        ydata_test = movmean(T_test.(yname),round(k/test_interval));
+        figure(i-2)
+        hold on
+        plot(xdata_test,ydata_test)
+        hold off
+        legend('training','validation')
+    end
 end
