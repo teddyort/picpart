@@ -47,14 +47,14 @@ class IoULayer(caffe.Layer):
         for i in range(labels.shape[0]):
             hist = self.fast_hist(labels[i,...].flatten(), predictions[i,...].argmax(0).flatten())
             self.hist += hist
-        IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist.sum(0)[1:]-np.diag(hist)[1:])
-        meanIoU = np.nanmean(IoU)
+        IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist.sum(0)[1:]-np.diag(hist)[1:]+1e-10)
+        meanIoU = np.mean(np.nan_to_num(IoU))
         top[0].data[...] = meanIoU
         if self.verbose:
-            print('First 10 predictions of first image:')
-            print(predictions[0,...].argmax(0).flatten()[0:10])
-            print('Top 10 x 10 of hist:')
-            print(self.hist[0:10,0:10])
+            print('First 30 predictions of first image in batch:')
+            print(predictions[0,...].argmax(0).flatten()[0:30])
+            print('Top 10 x 4 of hist:')
+            print(self.hist[0:10,0:4])
             print('mean IoU: {}'.format(meanIoU))
         
     
