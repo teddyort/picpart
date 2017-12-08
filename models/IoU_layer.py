@@ -6,9 +6,9 @@ Created on Wed Dec  6 11:06:08 2017
 """
 import caffe
 import numpy as np
-import sys
-sys.path.append('../util/')
-from utils_eval import intersectionAndUnion
+#import sys
+#sys.path.append('../util/')
+#from utils_eval import intersectionAndUnion
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -55,12 +55,13 @@ class IoULayer(caffe.Layer):
         IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist[1:,:].sum(0)[1:]-np.diag(hist)[1:])
         meanIoU = np.mean(np.nan_to_num(IoU))
         
-        area_intersection = np.zeros([150,batch_size])
-        area_union = np.zeros([150,batch_size])
-        for i in range(batch_size):
-            (area_intersection[:,i], area_union[:,i]) = intersectionAndUnion(predictions[i,...].argmax(0), labels[i,...],150)
-        IoU2 = 1.0 * np.sum(area_intersection, axis=1) / np.sum(np.spacing(1)+area_union, axis=1)
-        meanIoU2 = np.mean(IoU2)
+        # compare this IoU function with the one provided (intersectionAndUnion)
+#        area_intersection = np.zeros([150,batch_size])
+#        area_union = np.zeros([150,batch_size])
+#        for i in range(batch_size):
+#            (area_intersection[:,i], area_union[:,i]) = intersectionAndUnion(predictions[i,...].argmax(0), labels[i,...],150)
+#        IoU2 = 1.0 * np.sum(area_intersection, axis=1) / np.sum(np.spacing(1)+area_union, axis=1)
+#        meanIoU2 = np.mean(IoU2)
         
         top[0].data[...] = meanIoU
         if self.verbose:
@@ -70,7 +71,7 @@ class IoULayer(caffe.Layer):
             print(self.hist[0:10,0:4])
         if self.verbose or self.phase == 1:
             print('mean IoU: {}'.format(meanIoU))
-            print('mean IoU2:{}'.format(meanIoU2))
+#            print('mean IoU2:{}'.format(meanIoU2))
             
         
     
