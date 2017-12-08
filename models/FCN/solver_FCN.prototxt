@@ -1,7 +1,9 @@
 net: "FCN/train_FCN.prototxt"
 test_initialization: true
-test_interval: 100
-display: 10
+test_iter: 1
+test_interval: 10
+test_compute_loss: true
+display: 1
 average_loss: 20
 lr_policy: "fixed"
 # lr for unnormalized softmax
