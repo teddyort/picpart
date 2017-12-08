@@ -8,6 +8,23 @@ layer {
     layer: "AdeSegDataLayer"
     param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 8, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
   }
+  include {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "data"
+  type: "Python"
+  top: "data"
+  top: "label"
+  python_param {
+    module: "ade_layers"
+    layer: "AdeSegDataLayer"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 5, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+  }
+  include {
+    phase: TEST
+  }
 }
 layer {
   name: "conv1_1"
@@ -705,6 +722,25 @@ layer {
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'FCN_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'FCN_train_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+  }
+  include {
+    phase: TRAIN
+  }
+}
+
+layer {
+  name: "Logger"
+  type: "Python"
+  bottom: "accuracy"
+  bottom: "meanIoU"
+  bottom: "loss"
+  python_param {
+    module: "log_layer"
+    layer: "LogLayer"
+    param_str: "{\'file\':\'FCN_test_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+  }
+  include {
+    phase: TEST
   }
 }
