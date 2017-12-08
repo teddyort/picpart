@@ -6,6 +6,7 @@ Created on Wed Dec  6 11:06:08 2017
 """
 import caffe
 import numpy as np
+np.seterr(divide='ignore', invalid='ignore')
 
 class IoULayer(caffe.Layer):
     """

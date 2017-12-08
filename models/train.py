@@ -7,8 +7,8 @@ import caffe
 with open('../util/config.yaml', 'r') as f:
     config = yaml.load(f)
 
-network = 'DilatedNet'
-#network = 'FCN'
+#network = 'DilatedNet'
+network = 'FCN'
 
 solver_prototxt = ''
 restore_from = ''
