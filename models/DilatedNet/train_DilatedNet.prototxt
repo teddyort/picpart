@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 50, \'phase\': \'TRAIN\', \'fine_size\': 96, \'resize_mode\': \'crop\', \'loader\': \'h5\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 8, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
   }
   include {
     phase: TRAIN
@@ -21,7 +21,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': False, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 10, \'phase\': \'TEST\', \'fine_size\': 96, \'resize_mode\': \'crop\', \'loader\': \'h5\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': False, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 2, \'phase\': \'TEST\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
   }
   include {
     phase: TEST
@@ -400,7 +400,7 @@ layer {
   python_param {
     module: "IoU_layer"
     layer: "IoULayer"
-    param_str: "{\'classes\': 151, \'verbose\': True}"
+    param_str: "{\'classes\': 151, \'verbose\': False}"
   }
 }
 
@@ -426,7 +426,7 @@ layer {
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'DilatedNet_train_log_Dec08_0230.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'DilatedNet_train_log_Dec08_1115.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
   include {
     phase: TRAIN
@@ -441,7 +441,7 @@ layer {
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'DilatedNet_test_log_Dec08_0230.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'DilatedNet_test_log_Dec08_1115.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
   include {
     phase: TEST
