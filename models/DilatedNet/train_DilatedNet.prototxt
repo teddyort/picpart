@@ -579,7 +579,7 @@ layer {
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'DilatedNet_train_log_Dec09_0430.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'DilatedNet_train_log_Dec09_1200.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
   include {
     phase: TRAIN
@@ -594,7 +594,7 @@ layer {
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'DilatedNet_test_log_Dec09_0430.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'DilatedNet_test_log_Dec09_1200.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
   include {
     phase: TEST
