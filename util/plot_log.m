@@ -2,12 +2,12 @@ clear, clc, clf
 addpath(genpath('yaml_matlab')); 
 config = ReadYaml('config.yaml');
 log_folder = [config.dropbox,'logs/'];
-% log_train_name = 'FCN_train_log_Dec08_0215.txt';
-% log_test_name = 'FCN_test_log_Dec08_0215.txt';
+log_train_name = 'FCN_train_log_Dec08_0215.txt';
+log_test_name = 'FCN_test_log_Dec08_0215.txt';
 % log_train_name = 'DilatedNet_train_log_Dec08_0230.txt';
 % log_test_name = 'DilatedNet_test_log_Dec08_0230.txt';
-log_train_name = 'DilatedNet_train_log_Dec08_1115.txt';
-log_test_name = 'DilatedNet_test_log_Dec08_1115.txt';
+% log_train_name = 'DilatedNet_train_log_Dec08_1115.txt';
+% log_test_name = 'DilatedNet_test_log_Dec08_1115.txt';
 log_train_file = [log_folder,log_train_name];
 T_train = readtable(log_train_file,'Delimiter',',','HeaderLines',0,'ReadVariableNames',true);
 vars = T_train.Properties.VariableNames;
@@ -50,3 +50,8 @@ if validation_too
     end
 end
 
+%% save figures as png's for quick reference
+for i = 1:N
+    saveas(figure(i),[log_train_file(1:end-4),'_',vars{i+2},'.png'])
+    
+end
