@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 8, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 8, \'phase\': \'TRAIN\', \'fine_size\': 40, \'resize_mode\': \'crop\', \'loader\': \'disk\'}"
   }
   include {
     phase: TRAIN
@@ -21,7 +21,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': False, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TEST\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': False, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TEST\', \'fine_size\': 40, \'resize_mode\': \'crop\', \'loader\': \'disk\'}"
   }
   include {
     phase: TEST
@@ -37,6 +37,9 @@ layer {
     num_output: 64
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -54,6 +57,9 @@ layer {
     num_output: 64
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -82,6 +88,9 @@ layer {
     num_output: 128
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -99,6 +108,9 @@ layer {
     num_output: 128
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -127,6 +139,9 @@ layer {
     num_output: 256
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -144,6 +159,9 @@ layer {
     num_output: 256
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -161,6 +179,9 @@ layer {
     num_output: 256
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -189,6 +210,9 @@ layer {
     num_output: 512
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -206,6 +230,9 @@ layer {
     num_output: 512
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -223,6 +250,9 @@ layer {
     num_output: 512
     kernel_size: 3
     pad: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -241,6 +271,9 @@ layer {
     kernel_size: 3
     dilation: 2
     pad: 2
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -259,6 +292,9 @@ layer {
     kernel_size: 3
     dilation: 2
     pad: 2
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -277,6 +313,9 @@ layer {
     kernel_size: 3
     dilation: 2
     pad: 2
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -295,6 +334,9 @@ layer {
     kernel_size: 7
     dilation: 4
     pad: 12
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -320,6 +362,9 @@ layer {
   convolution_param {
     num_output: 4096
     kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
@@ -345,6 +390,9 @@ layer {
   convolution_param {
     num_output: 151
     kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
   }
 }
 layer {
