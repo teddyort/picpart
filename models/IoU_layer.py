@@ -6,9 +6,11 @@ Created on Wed Dec  6 11:06:08 2017
 """
 import caffe
 import numpy as np
+import scipy.misc # for saving images to disk
 #import sys
 #sys.path.append('../util/')
 #from utils_eval import intersectionAndUnion
+
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -30,6 +32,7 @@ class IoULayer(caffe.Layer):
         # number of pixel classes including 0 which is not counted
         self.n_classes= params["classes"]
         self.verbose = params["verbose"]
+        self.idx = 1
     
     def reshape(self, bottom, top):
         # each entry (i,j) in hist counts the number of pixels classified as i
@@ -52,7 +55,7 @@ class IoULayer(caffe.Layer):
         for i in range(batch_size):
             hist = self.fast_hist(labels[i,...].flatten(), predictions[i,...].argmax(0).flatten())
             self.hist += hist
-        IoU = np.diag(hist)[1:]/(hist.sum(1)[1:]+hist[1:,:].sum(0)[1:]-np.diag(hist)[1:])
+        IoU = np.diag(self.hist)[1:]/(self.hist.sum(1)[1:]+self.hist[1:,:].sum(0)[1:]-np.diag(self.hist)[1:])
         meanIoU = np.mean(np.nan_to_num(IoU))
         
         # compare this IoU function with the one provided (intersectionAndUnion)
@@ -64,16 +67,28 @@ class IoULayer(caffe.Layer):
 #        meanIoU2 = np.mean(IoU2)
         
         top[0].data[...] = meanIoU
+        
+        p0 = None
         if self.verbose:
-            print('First 30 predictions of first image in batch:')
-            print(predictions[0,...].argmax(0).flatten()[0:30])
+            p0 = predictions[0,...].argmax(0)
+            print('First 20 predictions of first image in batch:')
+            print(p0.flatten()[0:20])
             print('Top 10 x 4 of hist:')
             print(self.hist[0:10,0:4])
         if self.verbose or self.phase == 1:
             print('mean IoU: {}'.format(meanIoU))
-#            print('mean IoU2:{}'.format(meanIoU2))
-            
+#            print('mean IoU2:{}'.format(meanIoU2))  
         
+#        print("saving image {}".format(self.idx))
+#        self.saveImage(p0,"prediction_{}.png".format(self.idx))
+#        self.saveImage(labels[0,0,...],"label_{}.png".format(self.idx))
+#        self.idx += 1
+        
+    def saveImage(self, img, file_name):
+        # for debugging only
+        img = img.astype('uint16')
+        img = scipy.misc.toimage(img, high=np.max(img), low=np.min(img), mode='I')
+        img.save(file_name)
     
     def backward(self, top, propagate_down, bottom):
         """
