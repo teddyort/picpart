@@ -20,7 +20,7 @@ if network == 'DilatedNet':
 elif network == 'FCN':
     solver_prototxt = 'FCN/solver_FCN.prototxt'
     copy_from = config['dropbox']+'pretrained_models/FCN_iter_160000.caffemodel'
-    restore_from = '../snapshots/snapshot_iter_4000.solverstate'
+    #restore_from = '../snapshots/snapshot_iter_4000.solverstate'
 
 
 GPU = config['GPU']
