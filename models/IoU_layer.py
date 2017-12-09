@@ -56,7 +56,9 @@ class IoULayer(caffe.Layer):
             hist = self.fast_hist(labels[i,...].flatten(), predictions[i,...].argmax(0).flatten())
             self.hist += hist
         IoU = np.diag(self.hist)[1:]/(self.hist.sum(1)[1:]+self.hist[1:,:].sum(0)[1:]-np.diag(self.hist)[1:])
-        meanIoU = np.mean(np.nan_to_num(IoU))
+        # compute the mean only among the labels that are present
+        present = self.hist[1:,:].sum(1)>0
+        meanIoU = np.mean(np.nan_to_num(IoU[present]))
         
         # compare this IoU function with the one provided (intersectionAndUnion)
 #        area_intersection = np.zeros([150,batch_size])
@@ -76,6 +78,7 @@ class IoULayer(caffe.Layer):
             print('Top 10 x 4 of hist:')
             print(self.hist[0:10,0:4])
         if self.verbose or self.phase == 1:
+            print('{} classes present'.format(np.sum(present)))
             print('mean IoU: {}'.format(meanIoU))
 #            print('mean IoU2:{}'.format(meanIoU2))  
         
