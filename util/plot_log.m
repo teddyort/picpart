@@ -9,7 +9,8 @@ log_test_name = 'FCN_test_log_Dec08_0215.txt';
 % log_train_name = 'DilatedNet_train_log_Dec08_1115.txt';
 % log_test_name = 'DilatedNet_test_log_Dec08_1115.txt';
 log_train_file = [log_folder,log_train_name];
-T_train = readtable(log_train_file,'Delimiter',',','HeaderLines',0,'ReadVariableNames',true);
+T_train = readtable(log_train_file,'Delimiter',',','HeaderLines',0,...
+    'ReadVariableNames',true);
 vars = T_train.Properties.VariableNames;
 
 N = size(vars,2)-2;
