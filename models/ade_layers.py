@@ -79,7 +79,7 @@ class AdeSegDataLayer(caffe.Layer):
             
         # this array contains the vertical and horizontal offset in the first
         # column and whether to generate new values on the third
-        self.crop_sizes = np.ones([self.N,3],dtype=np.int)
+        self.crop_sizes = np.ones([self.N,3],dtype=np.int16)
     
     def shuffle(self):
         np.random.seed(self.seed)
@@ -156,7 +156,7 @@ class AdeSegDataLayer(caffe.Layer):
         in_ = None
         if self.loader == 'disk':
             im = Image.open('{}images/{}/{}.jpg'.format(self.ade_dir, self.split, self.indices[idx]))
-            in_ = self.resize(np.array(im)).astype(np.float32)
+            in_ = self.resize(np.asarray(im)).astype(np.float32)
         elif self.loader == 'h5':
             in_ = self.resize(self.img_set[idx]).astype(np.float32)
             
@@ -176,7 +176,7 @@ class AdeSegDataLayer(caffe.Layer):
         label = None
         if self.loader == 'disk':
             im = Image.open('{}annotations/{}/{}.png'.format(self.ade_dir, self.split, self.indices[idx]))
-            label = self.resize(im)[np.newaxis, ...]
+            label = self.resize(np.asarray(im,dtype=np.int16))[np.newaxis, ...]
         elif self.loader == 'h5':
             label = self.resize(self.lab_set[idx])
         return label

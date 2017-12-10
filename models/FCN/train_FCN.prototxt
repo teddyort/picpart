@@ -6,7 +6,24 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TRAIN\', \'fine_size\': 192, \'resize_mode\': \'scale\', \'loader\': \'disk\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 4, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+  }
+  include {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "data"
+  type: "Python"
+  top: "data"
+  top: "label"
+  python_param {
+    module: "ade_layers"
+    layer: "AdeSegDataLayer"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 2, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+  }
+  include {
+    phase: TEST
   }
 }
 layer {
@@ -663,9 +680,161 @@ layer {
   bottom: "score"
   bottom: "label"
   top: "loss"
+  softmax_param {engine: CAFFE}
   loss_param {
+    weight_by_label_freqs: true
     ignore_label: 0
-    normalize: false
+    class_weighting:  0       # 0
+    class_weighting:  0.254   # 1
+    class_weighting:  0.196   # 2
+    class_weighting:  0.293   # 3
+    class_weighting:  0.509   # 4
+    class_weighting:  0.454   # 5
+    class_weighting:  0.504   # 6
+    class_weighting:  0.362   # 7
+    class_weighting:  0.295   # 8
+    class_weighting:  0.840   # 9
+    class_weighting:  0.448   # 10
+    class_weighting:  0.602   # 11
+    class_weighting:  0.716   # 12
+    class_weighting:  1.137   # 13
+    class_weighting:  0.390   # 14
+    class_weighting:  1.002   # 15
+    class_weighting:  1.407   # 16
+    class_weighting:  0.405   # 17
+    class_weighting:  1.438   # 18
+    class_weighting:  0.774   # 19
+    class_weighting:  1.121   # 20
+    class_weighting:  1.195   # 21
+    class_weighting:  0.321   # 22
+    class_weighting:  1.766   # 23
+    class_weighting:  0.728   # 24
+    class_weighting:  0.789   # 25
+    class_weighting:  0.333   # 26
+    class_weighting:  0.291   # 27
+    class_weighting:  0.912   # 28
+    class_weighting:  0.960   # 29
+    class_weighting:  0.250   # 30
+    class_weighting:  1.021   # 31
+    class_weighting:  0.360   # 32
+    class_weighting:  1.536   # 33
+    class_weighting:  0.709   # 34
+    class_weighting:  0.742   # 35
+    class_weighting:  0.453   # 36
+    class_weighting:  4.631   # 37
+    class_weighting:  0.660   # 38
+    class_weighting:  1.285   # 39
+    class_weighting:  2.594   # 40
+    class_weighting:  0.562   # 41
+    class_weighting:  2.467   # 42
+    class_weighting:  1.302   # 43
+    class_weighting:  5.221   # 44
+    class_weighting:  1.104   # 45
+    class_weighting:  0.629   # 46
+    class_weighting:  0.433   # 47
+    class_weighting:  2.468   # 48
+    class_weighting:  0.212   # 49
+    class_weighting:  1.105   # 50
+    class_weighting:  0.869   # 51
+    class_weighting:  0.235   # 52
+    class_weighting:  0.998   # 53
+    class_weighting:  1.888   # 54
+    class_weighting:  0.230   # 55
+    class_weighting:  0.291   # 56
+    class_weighting:  0.394   # 57
+    class_weighting:  2.314   # 58
+    class_weighting:  0.408   # 59
+    class_weighting:  1.164   # 60
+    class_weighting:  0.371   # 61
+    class_weighting:  0.530   # 62
+    class_weighting:  0.564   # 63
+    class_weighting:  1.245   # 64
+    class_weighting:  2.298   # 65
+    class_weighting:  1.126   # 66
+    class_weighting:  3.395   # 67
+    class_weighting:  3.138   # 68
+    class_weighting:  0.504   # 69
+    class_weighting:  1.835   # 70
+    class_weighting:  1.084   # 71
+    class_weighting:  1.737   # 72
+    class_weighting:  1.123   # 73
+    class_weighting:  0.544   # 74
+    class_weighting:  0.952   # 75
+    class_weighting:  0.969   # 76
+    class_weighting:  0.943   # 77
+    class_weighting:  0.552   # 78
+    class_weighting:  0.256   # 79
+    class_weighting:  0.272   # 80
+    class_weighting:  1.144   # 81
+    class_weighting:  2.293   # 82
+    class_weighting: 11.572   # 83
+    class_weighting:  1.926   # 84
+    class_weighting:  0.598   # 85
+    class_weighting:  3.100   # 86
+    class_weighting:  2.648   # 87
+    class_weighting: 11.204   # 88
+    class_weighting:  0.346   # 89
+    class_weighting:  3.361   # 90
+    class_weighting:  0.778   # 91
+    class_weighting:  0.412   # 92
+    class_weighting:  0.772   # 93
+    class_weighting:  6.244   # 94
+    class_weighting:  0.717   # 95
+    class_weighting:  2.616   # 96
+    class_weighting:  0.243   # 97
+    class_weighting:  1.997   # 98
+    class_weighting:  5.860   # 99
+    class_weighting:  0.917   # 100
+    class_weighting:  2.007   # 101
+    class_weighting:  0.514   # 102
+    class_weighting:  3.402   # 103
+    class_weighting:  0.336   # 104
+    class_weighting:  0.613   # 105
+    class_weighting:  0.331   # 106
+    class_weighting:  0.397   # 107
+    class_weighting:  0.474   # 108
+    class_weighting:  2.291   # 109
+    class_weighting:  0.309   # 110
+    class_weighting:  3.380   # 111
+    class_weighting:  0.315   # 112
+    class_weighting:  4.818   # 113
+    class_weighting:  0.313   # 114
+    class_weighting:  0.335   # 115
+    class_weighting:  4.883   # 116
+    class_weighting:  2.683   # 117
+    class_weighting:  0.456   # 118
+    class_weighting:  1.891   # 119
+    class_weighting:  1.035   # 120
+    class_weighting:  0.851   # 121
+    class_weighting:  2.377   # 122
+    class_weighting:  0.545   # 123
+    class_weighting:  4.495   # 124
+    class_weighting:  3.597   # 125
+    class_weighting: 12.582   # 126
+    class_weighting:  0.915   # 127
+    class_weighting:  3.844   # 128
+    class_weighting:  0.324   # 129
+    class_weighting:  2.456   # 130
+    class_weighting:  0.998   # 131
+    class_weighting:  2.497   # 132
+    class_weighting:  2.979   # 133
+    class_weighting:  3.023   # 134
+    class_weighting: 10.865   # 135
+    class_weighting: 14.371   # 136
+    class_weighting:  6.991   # 137
+    class_weighting:  5.591   # 138
+    class_weighting:  9.417   # 139
+    class_weighting:  5.471   # 140
+    class_weighting:  0.900   # 141
+    class_weighting:  2.451   # 142
+    class_weighting:  7.125   # 143
+    class_weighting:  2.491   # 144
+    class_weighting:  2.358   # 145
+    class_weighting:  1.407   # 146
+    class_weighting:  2.740   # 147
+    class_weighting:  9.543   # 148
+    class_weighting: 14.010   # 149
+    class_weighting:  8.171   # 150
   }
 }
 
@@ -680,5 +849,50 @@ layer {
     top_k: 1
     ignore_label: 0
     axis: 1
+  }
+}
+
+layer {
+  name: "IoU"
+  type: "Python"
+  bottom: "score"
+  bottom: "label"
+  top: "meanIoU"
+  python_param {
+    module: "IoU_layer"
+    layer: "IoULayer"
+    param_str: "{\'classes\': 151, \'verbose\': False}"
+  }
+}
+
+layer {
+  name: "Logger"
+  type: "Python"
+  bottom: "accuracy"
+  bottom: "meanIoU"
+  bottom: "loss"
+  python_param {
+    module: "log_layer"
+    layer: "LogLayer"
+    param_str: "{\'file\':\'FCN_train_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+  }
+  include {
+    phase: TRAIN
+  }
+}
+
+layer {
+  name: "Logger"
+  type: "Python"
+  bottom: "accuracy"
+  bottom: "meanIoU"
+  bottom: "loss"
+  python_param {
+    module: "log_layer"
+    layer: "LogLayer"
+    param_str: "{\'file\':\'FCN_test_log.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+  }
+  include {
+    phase: TEST
   }
 }
