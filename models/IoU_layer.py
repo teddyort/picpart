@@ -77,7 +77,6 @@ class IoULayer(caffe.Layer):
             print(p0.flatten()[0:20])
             print('Top 10 x 4 of hist:')
             print(self.hist[0:10,0:4])
-        if self.verbose or self.phase == 1:
             print('{} classes present'.format(np.sum(present)))
             print('mean IoU: {}'.format(meanIoU))
 #            print('mean IoU2:{}'.format(meanIoU2))  
