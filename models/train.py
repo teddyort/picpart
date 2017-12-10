@@ -15,7 +15,7 @@ restore_from = ''
 copy_from = ''
 if network == 'DilatedNet':
     solver_prototxt = 'DilatedNet/solver_DilatedNet.prototxt'
-    #copy_from = config['dropbox']+'pretrained_models/DilatedNet_iter_120000.caffemodel'
+    copy_from = config['dropbox']+'pretrained_models/DilatedNet_iter_120000.caffemodel'
     #restore_from = '../snapshots/DilatedNet_Dec_05/snapshot_iter_190000.solverstate'
 elif network == 'FCN':
     solver_prototxt = 'FCN/solver_FCN.prototxt'
