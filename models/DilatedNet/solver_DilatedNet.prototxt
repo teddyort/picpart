@@ -5,7 +5,7 @@ test_initialization: true
 test_iter: 1
    # how often to do a test phase
 test_interval: 10
-test_compute_loss: true
+test_compute_loss: false
 display: 10
 max_iter: 20000
 base_lr: 0.01

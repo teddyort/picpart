@@ -49,7 +49,7 @@ class LogLayer(caffe.Layer):
             self.iter += 1
             writer.write(datetime.datetime.now().strftime(",%Y-%m-%d_%H:%M:%S"))
             for i in range(len(bottom)):
-                top[i].data = bottom[i].data
+                top[i].data[...] = bottom[i].data[...]
                 writer.write(',{}'.format(np.asscalar(bottom[i].data)))
             writer.write('\n')
             
