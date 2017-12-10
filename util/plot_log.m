@@ -10,8 +10,10 @@ log_folder = [config.dropbox,'logs/'];
 % log_test_name = 'DilatedNet_test_log_Dec08_1115.txt';
 % log_train_name = 'DilatedNet_train_log_Dec09_0430.txt';
 % log_test_name = 'DilatedNet_test_log_Dec09_0430.txt';
-log_train_name = 'DilatedNet_train_log_Dec09_1200.txt';
-log_test_name = 'DilatedNet_test_log_Dec09_1200.txt';
+% log_train_name = 'DilatedNet_train_log_Dec09_1200.txt';
+% log_test_name = 'DilatedNet_test_log_Dec09_1200.txt';
+log_train_name = 'DilatedNet_train_log_Dec09_1900.txt';
+log_test_name = 'DilatedNet_test_log_Dec09_1900.txt';
 log_train_file = [log_folder,log_train_name];
 T_train = readtable(log_train_file,'Delimiter',',','HeaderLines',0,...
     'ReadVariableNames',true);
