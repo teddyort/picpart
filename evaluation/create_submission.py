@@ -17,13 +17,13 @@ import sys
 
 dt = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 dropbox_path    = '/home/cruncher/Picpart/dropbox/'
-save_foldername = 'pretrained_dilatednet_test' # dt
-model_folder    = 'pretrained_models' #'snapshots/DilatedNet_Dec_05/'
+save_foldername = dt
+model_folder    = 'snapshots/DilatedNet_Dec10_1630/' #'snapshots/DilatedNet_Dec_05/'
 proto           = 'deploy_DilatedNet.prototxt'
-model           = 'DilatedNet_iter_120000.caffemodel'
+model           = 'snapshot_iter_1000.caffemodel'
 dataset_name    = 'ADEChallengeData2016'
-list_filename   = 'testing.txt' #validation.txt | list.txt
-images_folder   = 'testing' #'testing | validation'
+list_filename   = 'validation.txt' #validation.txt | list.txt
+images_folder   = 'validation' #'testing | validation'
 output_layer    = 'fc_final_up' # 'fc_final_up' | out
 print_after     = 10
 GPU_DEVICE      = 1
@@ -31,7 +31,7 @@ GPU_DEVICE      = 1
 data_path       = dropbox_path + 'data/'
 model_path      = dropbox_path + model_folder + '/'
 images_path     = data_path + dataset_name + '/images/' + images_folder + '/'
-pred_path       = data_path + dataset_name + '/images/predictions/' + save_foldername + '/'
+pred_path       = model_path + 'predictions/' + save_foldername + '/'
 list_file       = data_path + dataset_name + '/' + list_filename
 
 
