@@ -69,6 +69,7 @@ class Ensemble(object):
             
             # Assemble the ensemble
             b_preds = (probs*w).sum(-1).argmax(1)
+#            b_preds = np.ones((self.batch_size, 384, 384))
             b_preds = [x.squeeze() for x in np.vsplit(b_preds,b_preds.shape[0])]
             
             # Save for evaluation
@@ -80,8 +81,10 @@ class Ensemble(object):
         score = np.mean([IOU,ACC])
         
         # Save to log
-        with open(self.log_path+'ensemble_log.txt', "ba") as logfile:
-            np.savetxt(logfile, np.hstack((np.array([score]), w[...,0].squeeze())).reshape(1,-1), delimiter='\t')
+        if not self.log_path is None:
+            with open(self.log_path+'ensemble_log.txt', "ba") as logfile:
+                np.savetxt(logfile, np.hstack((np.array([score]), w[...,0].squeeze())).reshape(1,-1), delimiter='\t')
+            
         runtime = time.time() - start_time
         print("Params: {}, Final score: {:.4f}, IOU: {:.4f}, ACC: {:.4f}, Time: {:.2f}".format(w.mean(0).squeeze(), score, IOU, ACC, runtime))
         return(1-score)
