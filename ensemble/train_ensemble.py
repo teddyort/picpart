@@ -6,14 +6,12 @@ Created on Sun Dec 10 20:00:37 2017
 @author: cruncher
 """
 import caffe
-from scipy.misc import imread
 import numpy as np
-import sys
-sys.path.append('../util')
-from utils_eval import pixelAccuracy, intersectionAndUnion
 from multiprocessing import Pool
-import datetime, time
-import cv2
+import datetime
+from do_ensemble import Ensemble
+from scipy.optimize import minimize, basinhopping, brute
+import os
 
 dt = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 dropbox_path    = '/home/cruncher/Picpart/dropbox/'
@@ -23,44 +21,45 @@ model_folders   = ['pretrained_models/dilated_net', 'pretrained_models/fcn']
 models          = ['DilatedNet_iter_120000.caffemodel', 'FCN_iter_160000.caffemodel']
 protos          = ['deploy_DilatedNet.prototxt', 'deploy_FCN.prototxt']
 output_layers   = ['fc_final_up', 'score']
-list_filename   = 'validation.min.txt'
-anno_folder     = 'annotations/validation'
-images_folder   = 'validation' #'testing | validation'
-pred_folder     = 'images/predictions'
+list_filename   = 'training.min.txt'
+anno_folder     = 'annotations/training'
+images_folder   = 'training' #'testing | validation'
+out_folder     = 'ensemble_weights'
+output_filename = 'ensemble_'+dt+'.txt'
 num_classes     = 150
 num_jobs        = 18
 print_after     = 10
 GPU_DEVICE      = 0
 batch_size      = 1
-params          = [0.5,0.5]
+p0              = 0.8*np.ones(num_classes+1)
 
 data_path       = dropbox_path + 'data/'
 images_path     = data_path + dataset_name + '/images/' + images_folder + '/'
 list_file       = data_path + dataset_name + '/' + list_filename
 anno_path       = data_path + dataset_name + '/' + anno_folder + '/'
-pred_path       = data_path + dataset_name + '/' + pred_folder + '/'
+output_path     = data_path + dataset_name + '/' + out_folder + '/'
 
-def evaluate(pred, lbl):
-    pred = cv2.resize(pred, lbl.shape[1::-1], fx=0,fy=0,interpolation=cv2.INTER_NEAREST)
-    pa = pixelAccuracy(pred,lbl)
-    iau = intersectionAndUnion(pred,lbl,num_classes)
-    return (pa, iau[0], iau[1])
+class MyBounds(object):
+    def __init__(self, xmax=[1]*len(p0), xmin=[0]*len(p0) ):
+        self.xmax = np.array(xmax)
+        self.xmin = np.array(xmin)
+    def __call__(self, **kwargs):
+        x = kwargs["x_new"]
+        tmax = bool(np.all(x <= self.xmax))
+        tmin = bool(np.all(x >= self.xmin))
+        return tmax and tmin
+mybounds = MyBounds()
 
-def evaluate_all(preds, labels):
-    # Evaluate Images
-    result = []
-    for j, lbl in enumerate(labels):
-        result.append(evaluate(preds[j], lbl))
-    result = list(zip(*result))
-    PAs = np.array(result[0])
-    Ints = np.array(result[1])
-    Unions = np.array(result[2])
-    IOUs = Ints.sum(0)/sum(Unions+sys.float_info.epsilon,0)
-    IOU = IOUs.mean()
-    ACC = sum(PAs[:,1])/sum(PAs[:,2])
-    return (IOU, ACC)
-#    return np.mean((IOU, ACC))
+X,F,A = [],[],[]
+def mycallback(x, f, accept):
+    X.append(x)
+    F.append(f)
+    A.append(accept)
 
+# Ensure the output folder exists 
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
+    
 # Choose device
 caffe.set_mode_gpu()
 caffe.set_device(GPU_DEVICE)
@@ -83,36 +82,16 @@ for j in range(len(models)):
 with open(list_file, 'r') as file:
     files = [line.rstrip() for line in file]
     
-# Process a batch of images
-start_time = time.time()
-preds, labels = [],[]
-for k in range(int(len(files)/batch_size)):
-    # Read in the images and labels
-    b_images, b_labels = [], []
-    for j in range(k*batch_size, (k+1)*batch_size):
-        b_images.append(caffe.io.load_image(images_path + files[j] + '.jpg'))
-        b_labels.append(imread(anno_path + files[j] + '.png'))
-        if j%print_after == 0 and j>0:
-            print("Completed image {} after {:2f} seconds".format(j, time.time() - start_time))
-            
-    # Forward pass to probabilities
-    probs = []
-    for j, net in enumerate(nets):
-        data = np.stack([transformers[j].preprocess('data', im) for im in b_images])
-        result = net.forward_all(data=data)[output_layers[j]]
-        probs.append(result)
-    probs = np.stack(probs, -1)
-    
-    # Assemble the ensemble
-    b_preds = np.tensordot(probs, params,1).argmax(1)
-    b_preds = [x.squeeze() for x in np.vsplit(b_preds,b_preds.shape[0])]
-    
-    # Save for evaluation
-    preds.extend(b_preds)
-    labels.extend(b_labels)
+paths = (images_path, anno_path, output_path)
+opts = (num_classes, batch_size, print_after)
+ensemble = Ensemble(nets, transformers, output_layers, files, paths, opts)
 
-# Evaluate all the images
-(IOU, ACC) = evaluate_all(preds, labels)
-score = np.mean([IOU,ACC])
-print("Total Time: %s seconds" % (time.time() - start_time))
-print("Final score: {:.4f} with mean IOU: {:.4f} and mean ACC: {:.4f}".format(score, IOU, ACC))
+res = minimize(ensemble.do_ensemble, p0, method='Powell', options={'maxfev': 5, 'xtol':0.1, 'ftol':0.1})
+
+#res = basinhopping(ensemble.do_ensemble, p0, niter=20, T=0.1, stepsize=0.4, callback=mycallback, disp=True, accept_test=mybounds)
+
+#res = brute(ensemble.do_ensemble, ((0,1),)*len(p0), 3, full_output=True, disp=True)
+
+np.savetxt(output_path + output_filename, res.x)
+
+#ensemble.do_ensemble(p0)
