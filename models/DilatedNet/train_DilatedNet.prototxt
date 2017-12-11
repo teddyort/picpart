@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 100, \'phase\': \'TRAIN\', \'fine_size\': 40, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': True, \'split\': \'training\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 8, \'phase\': \'TRAIN\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
   }
   include {
     phase: TRAIN
@@ -21,7 +21,7 @@ layer {
   python_param {
     module: "ade_layers"
     layer: "AdeSegDataLayer"
-    param_str: "{\'seed\': 1337, \'randomize\': False, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TEST\', \'fine_size\': 40, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
+    param_str: "{\'seed\': 1337, \'randomize\': False, \'split\': \'validation\', \'mean\': (109.5388, 118.6897, 124.6901), \'batch_size\': 1, \'phase\': \'TEST\', \'fine_size\': 384, \'resize_mode\': \'scale\', \'loader\': \'h5\'}"
   }
   include {
     phase: TEST
@@ -576,21 +576,21 @@ layer {
   }
 }
 
-layer {
-  name: "SegAccuracy"
-  type: "Python"
-  bottom: "fc_final_up"
-  bottom: "label"
-  top: "seg_accuracy"
-  python_param {
-    module: "accuracy_layer"
-    layer: "SegmentationAccuracy"
-    param_str: "{\'ignore_label\': 0, \'verbose\': True}"
-  }
-  include {
-    phase: TEST
-  }
-}
+#layer {
+#  name: "SegAccuracy"
+#  type: "Python"
+#  bottom: "fc_final_up"
+#  bottom: "label"
+#  top: "seg_accuracy"
+#  python_param {
+#    module: "accuracy_layer"
+#    layer: "SegmentationAccuracy"
+#    param_str: "{\'ignore_label\': 0, \'verbose\': False}"
+#  }
+#  include {
+#    phase: TEST
+#  }
+#}
 
 layer {
   name: "IoU"
@@ -604,7 +604,6 @@ layer {
     param_str: "{\'classes\': 151, \'verbose\': False}"
   }
 }
-
 layer {
   name: "Accuracy"
   type: "Accuracy"
@@ -624,10 +623,13 @@ layer {
   bottom: "accuracy"
   bottom: "meanIoU"
   bottom: "loss"
+  top: "accuracy"
+  top: "meanIoU"
+  top: "loss"
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'DilatedNet_train_log_Dec09_1900.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'DilatedNet_train_log_Dec09_2230.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
   include {
     phase: TRAIN
@@ -639,10 +641,13 @@ layer {
   bottom: "accuracy"
   bottom: "meanIoU"
   bottom: "loss"
+  top: "accuracy"
+  top: "meanIoU"
+  top: "loss"
   python_param {
     module: "log_layer"
     layer: "LogLayer"
-    param_str: "{\'file\':\'DilatedNet_test_log_Dec09_1900.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
+    param_str: "{\'file\':\'DilatedNet_test_log_Dec09_2230.txt\',\'headers\': (\'accuracy\',\'meanIoU\',\'loss\')}"
   }
   include {
     phase: TEST
